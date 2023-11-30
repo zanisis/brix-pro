@@ -1,1 +1,8 @@
 // app global css in SCSS form
+
+.title-appbar {
+  text-align: left;
+  @media (max-width: $breakpoint-xs-max) {
+    text-align: center;
+  }
+}
