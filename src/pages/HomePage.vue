@@ -1,20 +1,9 @@
 <template>
   <q-header elevated>
     <q-toolbar>
-      <!-- <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        /> -->
-
       <q-toolbar-title class="title-appbar">
         Movies Collection
       </q-toolbar-title>
-
-      <!-- <div>Quasar v{{ $q.version }}</div> -->
     </q-toolbar>
   </q-header>
   <q-page class="row items-center justify-evenly">
@@ -25,7 +14,13 @@
       :meta="meta"
     ></example-component>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab padding="sm" icon="add" color="primary" />
+      <q-btn
+        fab
+        padding="sm"
+        icon="add"
+        color="primary"
+        @click="$router.push({ path: '/add' })"
+      />
     </q-page-sticky>
   </q-page>
 </template>
