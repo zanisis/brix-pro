@@ -66,7 +66,8 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { useQuasar, QForm } from 'quasar';
+import { useQuasar } from 'quasar';
+import type { QForm } from 'quasar';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMovieStore } from 'src/stores/movieCollection';
@@ -75,7 +76,7 @@ const $q = useQuasar();
 const router = useRouter();
 const movieStore = useMovieStore();
 
-const myForm = ref(QForm);
+const myForm = ref<QForm | null>(null);
 const title = ref(null);
 const director = ref(null);
 const summary = ref(null);
@@ -98,7 +99,7 @@ const handleGenreSelect = (value: string) => {
 };
 
 const onSubmit = () => {
-  myForm.value.validate().then((success: boolean) => {
+  myForm.value?.validate().then((success: boolean) => {
     if (success) {
       movieStore.addMovie({
         title: title.value ?? '',

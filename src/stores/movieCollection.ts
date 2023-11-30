@@ -15,4 +15,5 @@ export const useMovieStore = defineStore('movieCollection', {
       this.movies = newMovie;
     },
   },
+  persist: true,
 });
