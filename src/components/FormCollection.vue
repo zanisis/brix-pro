@@ -134,6 +134,13 @@ const onSubmit = () => {
           summary: summary.value ?? '',
           genres: selectedGenre.value,
         });
+        $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: 'Updated',
+          timeout: 1000,
+        });
       } else {
         movieStore.addMovie({
           title: title.value ?? '',
@@ -141,14 +148,15 @@ const onSubmit = () => {
           summary: summary.value ?? '',
           genres: selectedGenre.value,
         });
+        $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: 'Submitted',
+          timeout: 1000,
+        });
       }
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: 'Submitted',
-        timeout: 1000,
-      });
+
       router.replace({ path: '/' });
     } else {
       $q.notify({
