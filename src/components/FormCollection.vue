@@ -6,8 +6,9 @@
           <q-btn
             color="negative"
             label="Delete"
-            @click="onReset"
+            @click="onDelete"
             type="reset"
+            :disable="!props.id"
           />
           <q-btn
             color="secondary"
@@ -19,9 +20,14 @@
       </q-toolbar-title>
     </q-toolbar>
   </q-header>
-  <q-page class="">
+  <q-page>
     <div class="q-pa-md" style="max-width: 500px">
-      <p class="q-mb-lg text-h6 text-weight-medium">Add Movie</p>
+      <p
+        class="q-mb-lg text-h6 text-weight-medium"
+        @click="router.push({ path: '/', replace: true })"
+      >
+        {{ props.titleForm }}
+      </p>
       <q-form ref="myForm" class="q-gutter-md">
         <q-input
           outlined
@@ -69,24 +75,43 @@
 import { useQuasar } from 'quasar';
 import type { QForm } from 'quasar';
 import { ref } from 'vue';
+
 import { useRouter } from 'vue-router';
 import { useMovieStore } from 'src/stores/movieCollection';
+
+const props = defineProps<{
+  titleForm: string;
+  titleMovie?: string;
+  id?: string;
+}>();
 
 const $q = useQuasar();
 const router = useRouter();
 const movieStore = useMovieStore();
 
 const myForm = ref<QForm | null>(null);
-const title = ref(null);
-const director = ref(null);
-const summary = ref(null);
+const title = ref<string | null>(null);
+const director = ref<string | null>(null);
+const summary = ref<string | null>(null);
+
+const selectedGenre = ref([] as string[]);
+
 const genres = ref([
   { label: 'Action' },
   { label: 'Animation' },
   { label: 'Drama' },
   { label: 'Sci-Fi' },
 ]);
-const selectedGenre = ref([] as string[]);
+
+if (props.id) {
+  const movieData = movieStore.movies.find((movie) => {
+    return movie.id === Number(props.id);
+  });
+  title.value = movieData?.title || '';
+  director.value = movieData?.director || '';
+  summary.value = movieData?.summary || '';
+  selectedGenre.value = movieData?.genres as string[];
+}
 
 const handleGenreSelect = (value: string) => {
   let newGenres = [...selectedGenre.value];
@@ -101,12 +126,22 @@ const handleGenreSelect = (value: string) => {
 const onSubmit = () => {
   myForm.value?.validate().then((success: boolean) => {
     if (success) {
-      movieStore.addMovie({
-        title: title.value ?? '',
-        director: director.value ?? '',
-        summary: summary.value ?? '',
-        genres: selectedGenre.value,
-      });
+      if (props.id) {
+        movieStore.updateMovie({
+          id: Number(props?.id || 0),
+          title: title.value ?? '',
+          director: director.value ?? '',
+          summary: summary.value ?? '',
+          genres: selectedGenre.value,
+        });
+      } else {
+        movieStore.addMovie({
+          title: title.value ?? '',
+          director: director.value ?? '',
+          summary: summary.value ?? '',
+          genres: selectedGenre.value,
+        });
+      }
       $q.notify({
         color: 'green-4',
         textColor: 'white',
@@ -126,7 +161,16 @@ const onSubmit = () => {
     }
   });
 };
-const onReset = () => {
-  console.log('reset');
+
+const onDelete = () => {
+  movieStore.deleteMovie(title.value ?? '');
+  $q.notify({
+    color: 'green-4',
+    textColor: 'white',
+    icon: 'cloud_done',
+    message: 'Delete Success',
+    timeout: 1000,
+  });
+  router.replace({ path: '/' });
 };
 </script>
