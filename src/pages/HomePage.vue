@@ -20,7 +20,7 @@
     </q-input>
 
     <btn
-      v-for="movie in movieStore.movies"
+      v-for="movie in filterMovies()"
       :key="movie.title"
       @click="handleClickCard(movie.id)"
       class="full-width"
@@ -63,9 +63,15 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const movieStore = useMovieStore();
-const searchMovie = ref(null);
+const searchMovie = ref<string>('');
 
 const handleClickCard = (id: number) => {
   router.push({ path: `edit/${id}` });
+};
+
+const filterMovies = () => {
+  return movieStore.movies.filter((movie) => {
+    return movie.title.toLowerCase().includes(searchMovie.value.toLowerCase());
+  });
 };
 </script>
